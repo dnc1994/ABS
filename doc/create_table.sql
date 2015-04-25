@@ -2,17 +2,18 @@ drop table if exists users;
 
 create table users
 (
-	user_id			serial			primary key,
-	user_name		varchar(16),
-	user_pw_md5		varchar(32),
-	user_type		smallint,
-	realname		varchar(40),
-	gender			smallint,
-	age				smallint
+	user_id				serial				primary key,
+	user_name			varchar(16),
+	user_pw_md5			varchar(32),
+	user_type			smallint,
+	work_id				integer,
+	realname			varchar(40),
+	gender				smallint,
+	age					smallint
 	
 );
 
-insert into users values(1, 'root', '438fadf2a25a28f2f273dd4837347fa8', 0, 'Farter', 1, 20);
+insert into users values(1, 'root', '438fadf2a25a28f2f273dd4837347fa8', 0, 777, 'Farter', 1, 20);
 
 drop table if exists income;
 
@@ -24,7 +25,7 @@ drop table if exists books;
 
 create table books
 (
-	isbn				varchar(13)		primary key,
+	isbn				varchar(13)			primary key,
 	title				varchar(100),
 	publisher			varchar(100),
 	author				varchar(100),
@@ -42,18 +43,19 @@ create table orders
 	payment_status		smallint
 );
 
-create table income
+create table incomes
 (
-	in_id				serial		primary key,
+	in_id				serial				primary key,
 	in_time				timestamp,
-	order_id			integer		references orders	on delete cascade,
-	amount				numeric(8, 2)
+	isbn				varchar(13)			references books	on delete cascade,
+	amount				integer,
+	in_total			numeric(8, 2)
 );
 
 create table outgoings
 (
-	out_id				serial			primary key,
+	out_id				serial				primary key,
 	out_time			timestamp,
-	isbn				varchar(13)		references books	on delete cascade,
-	amout				numeric(8, 2)
+	order_id			integer				references orders	on delete cascade,
+	out_total			numeric(8, 2)
 );
