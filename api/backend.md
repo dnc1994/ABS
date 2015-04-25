@@ -48,7 +48,8 @@
 
 | API | method | user group | response | description |
 | --- | --- | --- | --- | --- |
-| `/order/all` | GET | all | String, Ok / Failed | create a new order |
+| `/order/all` | GET | all | JSON, array of orderdatas | get all orderdata |
+| `/order/data/{order_id}` | GET | all | String, Ok / Failed | get orderdata |
 | `/order/new/{orderdata}` | POST | all | String, Ok / Failed | create a new order |
 | `/order/delete/{order_id}` | POST | all | String, Ok / Failed | remove an order |
 | `/order/pay/{order_id}` | POST | all | String, Ok / Failed | finish payment |
