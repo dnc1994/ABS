@@ -14,10 +14,10 @@
 
 	userdata {
 		user_id: Number,
-		username: String,
+		user_name: String,
 		password: String,
 		realname: String,
-		workid: String,
+		work_id: String,
 		gender: Bool,
 		age: Number
 	}
@@ -41,7 +41,7 @@
 		author: String,			// "yuege|jackyyf|orz"
 		publisher: String,
 		retail_price: Number,	// 21.50
-		stock
+		stock: Number
 	}
 
 ## order
