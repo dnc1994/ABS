@@ -49,10 +49,11 @@
 | API | method | user group | response | description |
 | --- | --- | --- | --- | --- |
 | `/order/all` | GET | all | JSON, array of orderdatas | get all orderdata |
-| `/order/data/{order_id}` | GET | all | String, Ok / Failed | get orderdata |
-| `/order/new/{orderdata}` | POST | all | String, Ok / Failed | create a new order |
-| `/order/delete/{order_id}` | POST | all | String, Ok / Failed | remove an order |
-| `/order/pay/{order_id}` | POST | all | String, Ok / Failed | finish payment |
+| `/order/data/{order_id}` | GET | all | String, OK / Failed | get orderdata |
+| `/order/new/{orderdata}` | POST | all | String, OK / Failed | create a new order |
+| `/order/delete/{order_id}` | POST | all | String, OK / Failed | remove an order |
+| `/order/pay/{order_id}` | POST | all | String, OK / Failed | finish payment |
+| `/order/puton/{order_id}` | POST | all | String, OK / Failed | put books on shelf |
 
 ### detail & schemas
 
@@ -62,7 +63,7 @@
 		order_time: String,
 		order_price: Number,
 		order_amount: Number,
-		payment_status: Bool
+		order_status: Number
 	}
 
 ## bill
