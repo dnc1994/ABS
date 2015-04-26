@@ -13,9 +13,9 @@ create table users
 	
 );
 
-insert into users values(1, 'root', '438fadf2a25a28f2f273dd4837347fa8', 0, 777, 'Farter', 1, 20);
+insert into users(user_name, user_pw_md5, user_type, work_id, realname, gender, age) values('root', '8a22a370b0783d91fbcbd899f95431bb', 0, 777, 'Farter', 1, 20);
 
-drop table if exists income;
+drop table if exists incomes;
 
 drop table if exists outgoings;
 
@@ -29,8 +29,8 @@ create table books
 	title				varchar(100),
 	publisher			varchar(100),
 	author				varchar(100),
-	retail_price		numeric(8, 2),
-	stock				integer
+	retail_price		numeric(8, 2)		default				-1.00,
+	stock				integer				default				0
 );
 
 create table orders
@@ -40,7 +40,7 @@ create table orders
 	isbn				varchar(13)			references books	on delete cascade,
 	order_price			numeric(8, 2),		
 	order_amount		integer,
-	payment_status		smallint
+	order_status		smallint
 );
 
 create table incomes
