@@ -6,9 +6,9 @@
 | --- | --- | --- | --- | --- |
 | `/user/i` | GET | all | JSON, userdata of current user | query current user |
 | `/user/all` | GET | `superadmin` | JSON, array of all users' info | get all users |
-| `/user/new/{userdata}` | POST | `superadmin` | String, Ok / Failed | create a new user |
-| `/user/delete/{user_id}` | POST | `superadmin` | String, Ok / Failed | delete a user |
-| `/user/login/{username:password}` | POST | all | String, Ok / Failed | login |
+| `/user/new/{userdata}` | POST | `superadmin` | String, OK / Fail | create a new user |
+| `/user/delete/{user_id}` | POST | `superadmin` | String, OK / Fail | delete a user |
+| `/user/login/{username:password}` | POST | all | String, OK / Fail | login |
 
 ### detail & schemas
 
@@ -28,10 +28,10 @@
 | --- | --- | --- | --- | --- |
 | `/book/search/{keywords}` | GET | all | JSON, a list of search result | search books by keywords (ISBN, authors, ..) |
 | `/book/data/{isbn}` | GET | all | JSON, bookdata of specific book | query for specific book |
-| `/book/new/{bookdata}` | POST | all | String, Ok / Failed | add a new book |
-| `/book/delete/{isbn}` | POST | all | String, Ok / Failed | remove a book |
-| `/book/update/{isbn}/{bookdata}` | POST | all | String, Ok / Failed | modify some attributes of specific book |
-| `/book/sell/{isbn&amount}` | POST | all | String, Ok / Failed | sell books from stock |
+| `/book/new/{bookdata}` | POST | all | String, OK / Fail | add a new book |
+| `/book/delete/{isbn}` | POST | all | String, OK / Fail | remove a book |
+| `/book/update/{isbn}/{bookdata}` | POST | all | String, OK / Failed | modify some attributes of specific book |
+| `/book/sell/{isbn&amount}` | POST | all | String, OK / Fail | sell books from stock |
 
 ### detail & schemas
 
