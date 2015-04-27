@@ -70,7 +70,7 @@
 
 | API | method | user group | response | description |
 | --- | --- | --- | --- | --- |
-| `/bill/{start_time&end_time}` | POST | all | JSON, array of billdata | query bill details |
+| [x] `/bill/{start_time&end_time}` | POST | all | JSON, array of billdata | query bill details |
 
 ### detail & schemas
 
