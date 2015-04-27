@@ -5,11 +5,19 @@ import json
 import md5
 from decimal import Decimal
 
+##### SETTINGS #####
+
+web.config.debug = False
+web.config.session_parameters['cookie_name'] = 'SESSION'
+web.config.session_parameters['ignore_expiry'] = True 
+web.config.session_parameters['timeout'] = 1800
+
 ##### URLS #####
 
 urls = (
 	'/',					'test_view',
 	'/user/login',			'user_login',
+	'/user/logout',			'user_logout',
 	'/user/i',				'user_i',
 	'/user/all',			'user_all',
 	'/user/new',			'user_new',
@@ -37,7 +45,13 @@ db = web.database(dbn='postgres', user='postgres', pw='whereshallwego', db='book
 
 ##### GLOBALS #####
 
-
+session = web.session.Session(app, web.session.DiskStore('sessions'),
+	initializer={
+		'logged_in': 0,
+		'user_id': None,
+		'user_type': None
+	}
+)
 
 ##### FUNCTIONS #####
 
@@ -51,13 +65,50 @@ def defaultencode(o):
 	if isinstance(o, Decimal):
 		return fakefloat(o)
 	raise TypeError(repr(o) + " is not JSON serializable")
-
+	
+def logged_in(f):
+	def decorated(*args, **kwargs):
+		if session.logged_in != 1:
+			web.header('WWW-Authenticate', 'Basic realm="Please log in first."')
+			web.ctx.status = '401 Unauthorized'
+			return
+		return f(*args, **kwargs)
+	return decorated
+	
+def root_only(f):
+	def decorated(*args, **kwargs):
+		if session.user_type != 0:
+			web.header('WWW-Authenticate', 'Basic realm="Root only."')
+			web.ctx.status = '401 Unauthorized'
+			return
+		return f(*args, **kwargs)
+	return decorated
+	
 ##### REQUEST HANDLERS #####
 
 class test_view:
-	return 'TEST'
+	def GET(self):
+		return 'TEST'
 
 class user_login:
+	def GET(self):
+		uname = 'Zemin'
+		passwd = 'madamadadane'
+		passwd_md5 = md5.md5(passwd).hexdigest()
+		qvars = dict(uname=uname)
+		qrets = list(db.select('users', where='user_name = $uname', vars=qvars))
+		if qrets:
+			if qrets[0].user_pw_md5 == passwd_md5:
+				session.logged_in = 1
+				session.user_id = qrets[0].user_id
+				session.user_type = qrets[0].user_type
+				return session.user_id
+				return 'OK'
+			else:
+				return 'Fail'
+		else:
+			return 'Fail'
+			
 	def POST(self):
 		data = json.loads(web.data())
 		uname = data['username']
@@ -66,20 +117,39 @@ class user_login:
 		qvars = dict(uname=uname)
 		qrets = list(db.select('users', where='user_name = $uname', vars=qvars))
 		if qrets:
-			if rets[0].user_pw_md5 == passwd_md5:
-				web.setcookie('loggedin', 1)
+			if qrets[0].user_pw_md5 == passwd_md5:
+				session.logged_in = 1
+				session.user_id = qrets[0].user_id
+				session.user_type = qrets[0].user_type
 				return 'OK'
 			else:
 				return 'Fail'
 		else:
 			return 'Fail'
 
-class user_i:
+class user_logout:
+	@logged_in
 	def GET(self):
-		pass
+		session.logged_in = 0
+		return 'OK'
+			
+class user_i:
+	@logged_in
+	def GET(self):
+		qvars = dict(uid=session.user_id)
+		qrets = list(db.select('users', where='user_id = $uid', vars=qvars))
+		if qrets:
+			del qrets[0]['user_pw_md5']
+			return '[' + json.dumps(qrets[0]) + ']'
+		else:
+			return '[]'
 			
 class user_all:
+	@root_only
+	@logged_in
 	def GET(self):
+		#if session.user_type != 0:
+		#	return '[]'
 		qrets = list(db.select('users'))
 		for r in qrets:
 			del r['user_pw_md5']
@@ -87,7 +157,11 @@ class user_all:
 		return '[' + resp + ']'
 
 class user_new:
+	@root_only
+	@logged_in
 	def POST(self):
+		if session.user_type != 0:
+			return 'Fail'
 		data = json.loads(web.data())
 		qvars = data
 		passwd = data['password']
@@ -101,7 +175,11 @@ class user_new:
 			return 'Fail'
 		
 class user_delete:
+	@root_only
+	@logged_in
 	def POST(self):
+		if session.user_type != 0:
+			return 'Fail'
 		data = json.loads(web.data())
 		uid = data['user_id']
 		qvars = dict(uid=uid)
@@ -113,6 +191,7 @@ class user_delete:
 
 # temporary equivalent to book_data
 class book_search:
+	@logged_in
 	def GET(self, isbn):
 		if (not isbn.isdigit()) or (not len(isbn) == 13):
 			return '[]'
@@ -124,6 +203,7 @@ class book_search:
 			return '[]'
 	
 class book_data:
+	@logged_in
 	def GET(self, isbn):
 		if (not isbn.isdigit()) or (not len(isbn) == 13):
 			return '[]'
@@ -135,6 +215,7 @@ class book_data:
 			return '[]'
 			
 class book_new:
+	@logged_in
 	def POST(self):
 		data = json.loads(web.data())
 		qvars = data
@@ -145,6 +226,7 @@ class book_new:
 			return 'Fail'
 
 class book_update:
+	@logged_in
 	def POST(self):
 		data = json.loads(web.data())
 		qvars = data
@@ -155,6 +237,7 @@ class book_update:
 			return 'OK'
 
 class book_delete:
+	@logged_in
 	def POST(self):
 		data = json.loads(web.data())
 		isbn = data['isbn']
@@ -166,6 +249,7 @@ class book_delete:
 			return 'OK'
 
 class book_sell:
+	@logged_in
 	def POST(self):
 		data = json.loads(web.data())
 		isbn = data['isbn']
@@ -190,6 +274,7 @@ class book_sell:
 			return 'OK'
 
 class order_data:
+	@logged_in
 	def GET(self, oid):
 		if not oid.isdigit():
 			return '[]'
@@ -201,7 +286,8 @@ class order_data:
 		else:
 			return '[]'
 			
-class order_all:			
+class order_all:
+	@logged_in
 	def GET(self):
 		qrets = list(db.select('orders'))
 		for r in qrets:
@@ -210,6 +296,7 @@ class order_all:
 		return '[' + resp + ']'
 	
 class order_new:
+	@logged_in
 	def POST(self):
 		data = json.loads(web.data())
 		qvars = data
@@ -220,6 +307,7 @@ class order_new:
 			return 'Fail'
 			
 class order_delete:
+	@logged_in
 	def POST(self):
 		data = json.loads(web.data())
 		oid = data['order_id']
@@ -231,6 +319,7 @@ class order_delete:
 			return 'OK'
 
 class order_pay:
+	@logged_in
 	def POST(self):
 		data = json.loads(web.data())
 		oid = data['order_id']
@@ -255,6 +344,7 @@ class order_pay:
 				return 'Fail'
 				
 class order_puton:
+	@logged_in
 	def POST(self):
 		data = json.loads(web.data())
 		oid = data['order_id']
@@ -284,9 +374,11 @@ class order_puton:
 				return 'Fail'				
 				
 class bill_summary:
-	def GET(self):
-		st_time = '2015-04-26'
-		ed_time = '2015-04-28'
+	@logged_in
+	def POST(self):
+		data = json.loads(web.data())
+		st_time = data['start_time']
+		ed_time = data['end_time']
 		qvars = dict(st=st_time, ed=ed_time)
 		qrets = list(db.select('incomes', where='in_time > $st AND in_time < $ed', vars=qvars))
 		qrets2 = list(db.select('outgoings', where='out_time > $st AND out_time < $ed', vars=qvars))
@@ -304,5 +396,4 @@ class bill_summary:
 ##### END #####
 			
 if __name__ == '__main__':
-	app = web.application(urls, globals())
 	app.run()
