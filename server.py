@@ -1,5 +1,7 @@
-import web
+from gevent import monkey; monkey.patch_all()
+from gevent.pywsgi import WSGIServer
 import gevent
+import web
 import psycopg2
 import json
 import md5
@@ -37,14 +39,14 @@ urls = (
 	'/bill',				'bill_summary'
 )
 
-app = web.application(urls, globals())
-
 ##### DATABASES #####
 
 db = web.database(dbn='postgres', user='postgres', pw='whereshallwego', db='bookstore')
 
 ##### GLOBALS #####
 
+app = web.application(urls, globals())
+	
 session = web.session.Session(app, web.session.DiskStore('sessions'),
 	initializer={
 		'logged_in': 0,
@@ -396,4 +398,6 @@ class bill_summary:
 ##### END #####
 			
 if __name__ == '__main__':
-	app.run()
+	app = app.wsgifunc()
+	print 'Severing on 4000...'
+	WSGIServer(('', 4000), app).serve_forever()
