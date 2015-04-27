@@ -26,9 +26,9 @@
 
 | API | method | user group | response | description |
 | --- | --- | --- | --- | --- |
-| [x] `/book/search/{keywords}` | GET | all | JSON, a list of search result | search books by keywords (ISBN, authors, ..) |
-| [x] `/book/data/{isbn}` | GET | all | JSON, bookdata of specific book | query for specific book |
-| [x] `/book/new/{bookdata}` | POST | all | String, OK / Fail | add a new book |
+| `/book/search/{keywords}` | GET | all | JSON, a list of search result | search books by keywords (ISBN, authors, ..) |
+| `/book/data/{isbn}` | GET | all | JSON, bookdata of specific book | query for specific book |
+| `/book/new/{bookdata}` | POST | all | String, OK / Fail | add a new book |
 | `/book/delete/{isbn}` | POST | all | String, OK / Fail | remove a book |
 | `/book/update/{isbn}/{bookdata}` | POST | all | String, OK / Failed | modify some attributes of specific book |
 | `/book/sell/{isbn&amount}` | POST | all | String, OK / Fail | sell books from stock |
@@ -48,12 +48,12 @@
 
 | API | method | user group | response | description |
 | --- | --- | --- | --- | --- |
-| [x] `/order/all` | GET | all | JSON, array of orderdatas | get all orderdata |
-| [x] `/order/data/{order_id}` | GET | all | String, OK / Failed | get orderdata |
-| [x] `/order/new/{orderdata}` | POST | all | String, OK / Failed | create a new order |
-| [x] `/order/delete/{order_id}` | POST | all | String, OK / Failed | remove an order |
-| [x] `/order/pay/{order_id}` | POST | all | String, OK / Failed | finish payment |
-| [x] `/order/puton/{order_id}` | POST | all | String, OK / Failed | put books on shelf |
+| `/order/all` | GET | all | JSON, array of orderdatas | get all orderdata |
+| `/order/data/{order_id}` | GET | all | String, OK / Failed | get orderdata |
+| `/order/new/{orderdata}` | POST | all | String, OK / Failed | create a new order |
+| `/order/delete/{order_id}` | POST | all | String, OK / Failed | remove an order |
+| `/order/pay/{order_id}` | POST | all | String, OK / Failed | finish payment |
+| `/order/puton/{order_id}` | POST | all | String, OK / Failed | put books on shelf |
 
 ### detail & schemas
 
@@ -70,7 +70,7 @@
 
 | API | method | user group | response | description |
 | --- | --- | --- | --- | --- |
-| [x] `/bill/{start_time&end_time}` | POST | all | JSON, array of billdata | query bill details |
+| `/bill/{start_time&end_time}` | POST | all | JSON, array of billdata | query bill details |
 
 ### detail & schemas
 
