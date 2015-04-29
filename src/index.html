@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en" ng-app="ABS">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>ABS</title>
+  <!-- STYLES -->
+  <!-- build:css lib/css/main.min.css -->
+  <link rel="stylesheet" type="text/css" href="../bower_components/bootstrap/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" type="text/css" href="../bower_components/fontawesome/css/font-awesome.min.css">
+  <link rel="stylesheet" type="text/css" href="../bower_components/bootstrap-daterangepicker/daterangepicker-bs3.css" />
+  <link rel="stylesheet" type="text/css" href="../bower_components/angular-chart.js/dist/angular-chart.css" />
+  <!-- endbuild -->
+  <!-- Custom CSSs -->
+  <link rel="stylesheet" type="text/css" href="css/dashboard.min.css">
+  <!-- endbuild -->
+  <!-- SCRIPTS -->
+  <!-- build:js lib/js/main.min.js -->
+  <script type="text/javascript" src="../bower_components/jquery/dist/jquery.js"></script>
+  <script type="text/javascript" src="../bower_components/moment/moment.js"></script>
+  <script type="text/javascript" src="../bower_components/Chart.js/Chart.min.js"></script>
+  <script type="text/javascript" src="../bower_components/bootstrap-daterangepicker/daterangepicker.js"></script>
+  <script type="text/javascript" src="../bower_components/angular/angular.min.js"></script>
+  <script type="text/javascript" src="../bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
+  <script type="text/javascript" src="../bower_components/angular-cookies/angular-cookies.min.js"></script>
+  <script type="text/javascript" src="../bower_components/angular-ui-router/release/angular-ui-router.min.js"></script>
+  <script type="text/javascript" src="../bower_components/angular-translate/angular-translate.min.js"></script>
+  <script type="text/javascript" src="../bower_components/angular-chart.js/dist/angular-chart.min.js"></script>
+  <!-- endbuild -->
+  <!-- Custom Scripts -->
+  <script type="text/javascript" src="js/dashboard.min.js"></script>
+</head>
+<body ng-controller="MasterCtrl">
+<div id="page-wrapper" ng-class="{'open': toggle}" ng-cloak>
+
+  <!-- Sidebar -->
+  <div id="sidebar-wrapper">
+    <ul class="sidebar">
+      <li class="sidebar-main">
+        <a ng-click="toggleSidebar()">
+          | ABS |
+          <span class="menu-icon"><i class="fa fa-navicon"></i></span>
+        </a>
+      </li>
+      <li class="sidebar-list" ng-class="(getClass(li[0]))" ng-repeat="li in sidebarLists">
+        <a href="{{li[0]}}">{{ li[1] | translate }} <span class="menu-icon fa fa-{{li[2]}}"></span></a>
+      <li>
+      <li class="sidebar-title">{{ 'Current user' | translate }}</li>
+      <li class="sidebar-list" ng-class="(getClass('#/me'))">
+        <a href="#/me">
+          {{ me.user_name }} <span class="menu-icon fa fa-user"></span>
+        </a>
+      </li>
+    </ul>
+    <div class="sidebar-footer">
+      <div class="col-xs-4">
+        <a href="https://github.com/dnc1994/ABS" target="_blank">
+          GitHub
+        </a>
+      </div>
+      <div class="col-xs-4">
+        <a href="https://github.com/dnc1994/ABS/api" target="_blank">
+          API
+        </a>
+      </div>
+      <div class="col-xs-4">
+        <a href="mailto:ds303077135@gmail.com">
+          Contact
+        </a>
+      </div>
+    </div>
+  </div>
+  <!-- End Sidebar -->
+
+  <div id="content-wrapper">
+    <div class="page-content">
+
+      <!-- Header Bar -->
+      <div class="row header">
+        <div class="col-xs-12">
+          <div class="user pull-right">
+            <div class="item dropdown">
+              <a href="#" class="dropdown-toggle">
+                <img src="img/avatar.jpg">
+              </a>
+              <ul class="dropdown-menu dropdown-menu-right">
+                <li class="dropdown-header">
+                  {{ me.realname }}
+                </li>
+                <li class="divider"></li>
+                <li class="link">
+                  <a href="#/me">
+                    {{ 'Profile' | translate }}
+                  </a>
+                </li>
+                <li class="divider"></li>
+                <li class="link">
+                  <a href="javascript:" ng-click="logout()">
+                    {{ 'Logout' | translate }}
+                  </a>
+                </li>
+              </ul>
+            </div>
+            <div class="item dropdown">
+              <a href="#" class="dropdown-toggle">
+                <i class="fa fa-language"></i>
+              </a>
+              <ul class="dropdown-menu dropdown-menu-right">
+                <li class="dropdown-header">
+                  {{ 'Language' | translate }}
+                </li>
+                <li class="divider"></li>
+                <li>
+                  <a href="javascript:" ng-click="changeLang('zh')">简体中文</a>
+                </li>
+                <li>
+                  <a href="javascript:" ng-click="changeLang('en')">English</a>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div class="meta">
+            <div class="page">
+              Another Bookstore System
+            </div>
+            <div class="breadcrumb-links">
+              {{ getCurrentView() | translate }}
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- End Header Bar -->
+
+      <!-- Main Content -->
+      <div ui-view></div>
+
+    </div>
+    <!-- End Page Content -->
+  </div>
+  <!-- End Content Wrapper -->
+</div>
+<!-- End Page Wrapper -->
+</body>
+</html>

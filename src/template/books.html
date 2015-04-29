@@ -1,0 +1,42 @@
+<div class="row abs-booksearch" ng-controller="BookSearchCtrl">
+
+  <div class="col-lg-12">
+    <a type="button" href="#/books/new" class="btn btn-success"><i class="fa fa-plus"></i> {{ 'Add New Books' | translate }}</a>
+  </div>
+
+  <div class="col-lg-12">
+    <rd-widget>
+      <rd-widget-header icon="fa-book" title="{{ 'Books' | translate }}">
+        <input type="text" placeholder="{{ 'Search' | translate }}" class="form-control input-sm" ng-model="books.keywords"
+               ng-change="keywordsChange()"/>
+      </rd-widget-header>
+      <rd-widget-body classes="medium">
+        <div class="jumbotron" ng-if="!books.result.length">
+          <h3>{{ 'No result found' | translate }}</h3>
+          {{ 'You can search ISBN, title, author or publisher.' | translate }}
+        </div>
+
+        <div class="table-responsive" ng-if="books.result.length">
+          <table class="table table-hover">
+              <tr>
+                <th>{{ 'ISBN' | translate }}</th>
+                <th>{{ 'Title' | translate }}</th>
+                <th>{{ 'Authors' | translate }}</th>
+                <th>{{ 'Selling Price' | translate }}</th>
+                <th>{{ 'Stock' | translate }}</th>
+                <th>{{ 'Publisher' | translate }}</th>
+              </tr>
+              <tr ng-repeat="book in books.result">
+                <td><a href="#/books/{{ book.isbn }}">{{ book.isbn }}</a></td>
+                <td><a href="#/books/{{ book.isbn }}">{{ '《' | translate }}{{ book.title }}{{ '》' | translate }}</a></td>
+                <td>{{ book.author }}</td>
+                <td>{{ book.retail_price | currency: '￥' }}</td>
+                <td>{{ book.stock | number }}</td>
+                <td>{{ book.publisher }}</td>
+              </tr>
+          </table>
+        </div>
+      </rd-widget-body>
+      </rd-widget>
+  </div>
+</div>

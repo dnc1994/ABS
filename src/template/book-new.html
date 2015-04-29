@@ -1,0 +1,48 @@
+<div class="row" ng-controller="BookNewCtrl">
+  <div class="col-lg-12">
+    <rd-widget>
+      <rd-widget-header icon="fa-book" title="{{ 'Add New Books' | translate }}"></rd-widget-header>
+      <rd-widget-body classes="medium">
+        <a href="javascript:" ng-click="goBack()"><i class="fa fa-arrow-left"></i> {{ 'Back to List' | translate }}</a>
+        <hr>
+        <form class="form-horizontal col-md-8">
+          <div class="form-group {{ error.isbn }}">
+            <label for="inputIsbn" class="col-sm-2 control-label">{{ 'ISBN' | translate }}</label>
+            <div class="col-sm-10">
+              <input type="text" class="form-control" id="inputIsbn" ng-model="book.isbn">
+            </div>
+          </div>
+          <div class="form-group {{ error.title }}">
+            <label for="inputTitle" class="col-sm-2 control-label">{{ 'Title' | translate }}</label>
+            <div class="col-sm-10">
+              <input type="text" class="form-control" id="inputTitle" ng-model="book.title">
+            </div>
+          </div>
+          <div class="form-group {{ error.author }}">
+            <label for="inputAuthor" class="col-sm-2 control-label">{{ 'Authors' | translate }}</label>
+            <div class="col-sm-10">
+              <input type="text" class="form-control" id="inputAuthor" ng-model="book.author">
+            </div>
+          </div>
+          <div class="form-group {{ error.publisher }}">
+            <label for="inputPublisher" class="col-sm-2 control-label">{{ 'Publisher' | translate }}</label>
+            <div class="col-sm-10">
+              <input type="text" class="form-control" id="inputPublisher" ng-model="book.publisher">
+            </div>
+          </div>
+          <div class="form-group {{ error.retail_price }}">
+            <label for="inputPrice" class="col-sm-2 control-label">{{ 'Selling Price' | translate }}</label>
+            <div class="col-sm-10">
+              <input type="text" class="form-control" id="inputPrice" ng-model="book.retail_price">
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="col-sm-10 col-sm-offset-2">
+              <a type="button" class="btn btn-success" ng-click="add()">{{ 'Add' | translate }}</a>
+            </div>
+          </div>
+        </form>
+      </rd-widget-body>
+    </rd-widget>
+  </div>
+</div>

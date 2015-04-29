@@ -1,0 +1,158 @@
+<div ng-controller="BillCtrl">
+  <div class="row">
+    <div class="col-lg-12">
+      <div id="reportrange" class="pull-left">
+        <i class="glyphicon glyphicon-calendar fa fa-calendar"></i> &nbsp;<span></span> &nbsp;<b class="caret"></b>
+      </div>
+      <div class="pull-right" style="height: 32px; line-height: 32px">
+        <label for="input-view" style="font-weight: normal"><input id="input-view" type="checkbox" ng-model="view.splitView" ng-change="viewChange()"/> &nbsp;{{ 'Split' | translate }}</label>
+      </div>
+    </div>
+  </div>
+  <div ng-if="!view.splitView" class="row">
+    <div class="col-lg-12">
+      <rd-widget>
+        <rd-widget-header icon="fa-dollar" title="{{ 'Incomes' | translate }}">
+        </rd-widget-header>
+        <rd-widget-body classes="medium no-padding">
+          <div class="table-responsive">
+            <table class="table">
+              <thead>
+                <tr>
+                  <td class="text-right">{{ 'Date' | translate }}</td>
+                  <td class="text-right">{{ 'Details' | translate }}</td>
+                  <td class="text-right">{{ 'Sale Amount' | translate }}</td>
+                  <td class="text-right">{{ 'Incomes' | translate }}</td>
+                </tr>
+              </thead>
+              <tbody ng-init="incomeTotal = (bill | sum: 'in_total'); outgoingTotal = (bill | sum: 'out_total'); total = incomeTotal - outgoingTotal;">
+                <tr ng-repeat="item in bill | orderBy: '-time'">
+                  <td class="text-right">{{ item.time | date }}</td>
+                  <td class="text-right"><a href="{{ item.isbn ? '#/books/' + item.isbn : '#/orders/' + item.order_id }}">#{{ item.isbn || item.order_id }}</a></td>
+                  <td class="text-right">{{ item.amount || '' }}</td>
+                  <td class="text-right">{{ item.in_total ? '' : '-' }}<span class="text-{{ item.in_total ? 'success' : 'danger'}}">{{ item.in_total || item.out_total | currency: '￥' }}</span></td>
+                </tr>
+                <tr class="{{ total > 0 ? 'success' : 'danger' }}">
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td class="text-right">{{ total > 0 ? '+' : '-' }}{{ total > 0 ? total : -total | currency: '￥' }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="col-sm-12">
+            <canvas class="chart chart-line" data="chartTotal.data"
+                    labels="chartTotal.labels" legend="true" series="chartTotal.series">
+            </canvas>
+          </div>
+        </rd-widget-body>
+      </rd-widget>
+    </div>
+  </div>
+  <div ng-if="view.splitView" class="row">
+    <div class="col-lg-6">
+      <rd-widget>
+        <rd-widget-header icon="fa-dollar" title="{{ 'Incomes' | translate }}">
+          <p class="text-right"><label for="input-income" style="font-weight: normal"><input id="input-income" type="checkbox" ng-model="sort.incomeSortMethod" ng-change="changeSortMethod()"/> &nbsp;{{ 'Sort by amount' | translate }}</label></p>
+        </rd-widget-header>
+        <rd-widget-body classes="medium no-padding">
+          <div class="table-responsive">
+            <table class="table">
+              <thead>
+                <tr>
+                  <td class="text-right">{{ 'Date' | translate }}</td>
+                  <td class="text-right">{{ 'ISBN' | translate }}</td>
+                  <td class="text-right">{{ 'Sale Amount' | translate }}</td>
+                  <td class="text-right">{{ 'Incomes' | translate }}</td>
+                </tr>
+              </thead>
+              <tbody>
+                <tr ng-repeat="income in incomeSet = (bill | filter: { type: 'incomes' }) | orderBy : sort.incomeSortBy ">
+                  <td class="text-right">{{ income.time | date }}</td>
+                  <td class="text-right"><a href="#/books/{{ income.isbn }}">#{{ income.isbn }}</a></td>
+                  <td class="text-right">{{ income.amount }}</td>
+                  <td class="text-right"><span class="text-success">{{ income.in_total | currency: '￥' }}</span></td>
+                </tr>
+                <tr class="success">
+                  <td class="text-right">{{ incomeSet.length }}</td>
+                  <td></td>
+                  <td class="text-right">{{ incomeSet | sum: 'amount' | number }}</td>
+                  <td class="text-right">+ {{ incomeSet | sum: 'in_total' | currency: '￥' }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="col-sm-12">
+            <canvas class="chart chart-line" data="chartIncome.data"
+                    labels="chartIncome.labels" legend="false" series="chartIncome.series">
+            </canvas>
+          </div>
+        </rd-widget-body>
+        <!-- pagination
+        <rd-widget-footer>
+          <ul class="pagination pagination-sm pull-right">
+            <li><a href="#">&laquo;</a></li>
+            <li><a href="#">1</a></li>
+            <li><a href="#">2</a></li>
+            <li><a href="#">3</a></li>
+            <li><a href="#">4</a></li>
+            <li><a href="#">5</a></li>
+            <li><a href="#">&raquo;</a></li>
+          </ul>
+          <div class="clearfix"></div>
+        </rd-widget-footer>
+        -->
+      </rd-widget>
+    </div>
+    <div class="col-lg-6">
+      <rd-widget>
+        <rd-widget-header icon="fa-truck" title="{{ 'Outgoings' | translate }}">
+          <p class="text-right"><label for="input-outgoing" style="font-weight: normal"><input id="input-outgoing" type="checkbox" ng-model="sort.outgoingSortMethod" ng-change="changeSortMethod()"/> &nbsp;{{ 'Sort by amount' | translate }}</label></p>
+        </rd-widget-header>
+        <rd-widget-body classes="medium no-padding">
+          <div class="table-responsive">
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <td class="text-right">{{ 'Date' | translate }}</td>
+                  <td class="text-right">{{ 'Order ID' | translate }}</td>
+                  <td class="text-right">{{ 'Outgoings' | translate }}</td>
+                </tr>
+              </thead>
+              <tbody>
+                <tr ng-repeat="income in outgoingSet = (bill | filter: { type: 'outgoings' }) | orderBy: sort.outgoingSortBy ">
+                  <td class="text-right">{{ income.time | date }}</td>
+                  <td class="text-right"><a href="#/orders/{{ income.order_id }}">#{{ income.order_id }}</a></td>
+                  <td class="text-right"><span class="text-danger">- {{ income.out_total | currency: '￥' }}</span></td>
+                </tr>
+                <tr class="danger">
+                  <td class="text-right">{{ outgoingSet.length }}</td>
+                  <td></td>
+                  <td class="text-right">- {{ outgoingSet | sum: 'out_total' | currency: '￥' }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="col-sm-12">
+            <canvas class="chart chart-line" data="chartOutgoing.data"
+                    labels="chartOutgoing.labels" legend="false" series="chartOutgoing.series">
+            </canvas>
+          </div>
+        </rd-widget-body>
+        <!-- pagination
+        <rd-widget-footer>
+          <ul class="pagination pagination-sm pull-right">
+            <li><a href="#">&laquo;</a></li>
+            <li><a href="#">1</a></li>
+            <li><a href="#">2</a></li>
+            <li><a href="#">3</a></li>
+            <li><a href="#">&raquo;</a></li>
+          </ul>
+          <div class="clearfix"></div>
+        </rd-widget-footer>
+        -->
+      </rd-widget>
+    </div>
+  </div>
+</div>

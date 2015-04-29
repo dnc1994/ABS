@@ -12,6 +12,12 @@ Project for Database Course @ Fudan University
 - web.py
 - gevent
 - psycopg2
+- angular.js
+- bootstrap
+- rdash
+- chart.js
+- gulp
+- npm & bower
 
 ## License
 MIT License

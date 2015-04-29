@@ -1,0 +1,93 @@
+@font-face {
+  font-family: "Material-Design-Icons";
+  src: url("../fonts/Material-Design-Icons.eot?#iefix") format("embedded-opentype"), url("../fonts/Material-Design-Icons.woff2") format("woff2"), url("../fonts/Material-Design-Icons.woff") format("woff"), url("../fonts/Material-Design-Icons.ttf") format("truetype"), url("../fonts/Material-Design-Icons.svg#Material-Design-Icons") format("svg");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "Roboto";
+  src: url("../fonts/Roboto-Thin.woff2") format("woff2"), url("../fonts/Roboto-Thin.woff") format("woff"), url("../fonts/Roboto-Thin.ttf") format("truetype");
+  font-weight: 200;
+}
+@font-face {
+  font-family: "Roboto";
+  src: url("../fonts/Roboto-Light.woff2") format("woff2"), url("../fonts/Roboto-Light.woff") format("woff"), url("../fonts/Roboto-Light.ttf") format("truetype");
+  font-weight: 300;
+}
+@font-face {
+  font-family: "Roboto";
+  src: url("../fonts/Roboto-Regular.woff2") format("woff2"), url("../fonts/Roboto-Regular.woff") format("woff"), url("../fonts/Roboto-Regular.ttf") format("truetype");
+  font-weight: 400;
+}
+@font-face {
+  font-family: "Roboto";
+  src: url("../fonts/Roboto-Medium.woff2") format("woff2"), url("../fonts/Roboto-Medium.woff") format("woff"), url("../fonts/Roboto-Medium.ttf") format("truetype");
+  font-weight: 500;
+}
+@font-face {
+  font-family: "Roboto";
+  src: url("../fonts/Roboto-Bold.woff2") format("woff2"), url("../fonts/Roboto-Bold.woff") format("woff"), url("../fonts/Roboto-Bold.ttf") format("truetype");
+  font-weight: 700;
+}
+body {
+  font-family: "Roboto";
+}
+.abs-booksearch .jumbotron {
+  margin-bottom: 0;
+  color: silver;
+  background-color: white;
+}
+.widget-header .row > div {
+  margin-bottom: 0;
+}
+.btn {
+  box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.1), 0 1px 6px 0 rgba(0, 0, 0, 0.1);
+  border-radius: 2px;
+  -webkit-transition: all .3s ease-out;
+  -moz-transition: all .3s ease-out;
+  -o-transition: all .3s ease-out;
+  -ms-transition: all .3s ease-out;
+  transition: all .3s ease-out;
+}
+.btn-group {
+  box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.1), 0 1px 6px 0 rgba(0, 0, 0, 0.1);
+}
+.btn-group > .btn {
+  box-shadow: none;
+}
+.label {
+  -webkit-border-radius: 0;
+  -moz-border-radius: 0;
+  border-radius: 0;
+}
+rd-widget-header, rd-widget-body, rd-widget-footer {
+  display: block;
+}
+#reportrange {
+  background: #FFF;
+  cursor: pointer;
+  padding: 5px 10px;
+  border: 1px solid #CCC;
+}
+canvas.chart {
+  margin: 20px 0;
+}
+#login {
+  position: fixed;
+  overflow: scroll;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  z-index: 10000;
+  background-color: #30426A;
+}
+#login .jumbotron {
+  position: relative;
+  top: 50%;
+  transform: translateY(-50%);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3), 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+#login > div {
+  height: 100%;
+}
