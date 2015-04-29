@@ -1,0 +1,48 @@
+<div class="row abs-booksearch" ng-controller="OrderSearchCtrl">
+  <div class="col-lg-12">
+    <a type="button" href="#/orders/new" class="btn btn-success"><i class="fa fa-plus"></i> {{ 'Add New Order' | translate }}</a>
+  </div>
+  <div class="col-lg-12">
+    <rd-widget>
+      <rd-widget-header icon="fa-credit-card" title="{{ 'Orders' | translate }}">
+        <div class="pull-right" style="min-width: 180px">
+          <span><label for="input-0"><input id="input-0" ng-model="orders.filter[0]" ng-change="filterChange()" type="checkbox"> {{ 'Waiting for Payment' | translate }}</label></span>
+          <span><label for="input-1"><input id="input-1" ng-model="orders.filter[1]" ng-change="filterChange()" type="checkbox"> {{ 'Off Shelf' | translate }}</label></span>
+          <span><label for="input-2"><input id="input-2" ng-model="orders.filter[2]" ng-change="filterChange()" type="checkbox"> {{ 'On Shelf' | translate }}</label></span>
+        </div>
+      </rd-widget-header>
+      <rd-widget-body classes="medium">
+        <div class="jumbotron" ng-if="!orders.show.length">
+          <h3>{{ 'No result found' | translate }}</h3>
+          {{ 'No order.' | translate }}
+        </div>
+
+        <div class="table-responsive" ng-if="orders.show.length">
+          <table class="table table-hover">
+            <thead>
+              <tr>
+                <th class="text-center" style="width: 150px">{{ 'Payment' | translate }}</th>
+                <th class="text-center">{{ 'Order ID' | translate }}<i></i></th>
+                <th class="text-center">{{ 'ISBN' | translate }}</th>
+                <th class="text-right">{{ 'Price' | translate }}</th>
+                <th class="text-right">{{ 'Amount' | translate }}</th>
+                <th class="text-right">{{ 'Total' | translate }}</th>
+                <th class="text-right">{{ 'Date' | translate }}</th>
+              </tr>
+            </thead>
+
+            <tr ng-repeat="order in orders.show | filter: { isbn: orders.isbn }">
+              <td class="text-center {{ ['danger', 'warning', 'success'][order.payment_status] }}">{{ ['Waiting for Payment', 'Payment Already Processed & Off Shelf', 'On Shelf'][order.payment_status] | translate }}</td>
+              <td class="text-center"><a href="#/orders/{{ order.order_id }}">{{ order.order_id }}</a></td>
+              <td class="text-center"><a href="#/books/{{ order.isbn }}">{{ order.isbn }}</a></td>
+              <td class="text-right">{{ order.order_price | currency: "￥" }}</td>
+              <td class="text-right">{{ order.order_amount | number }}</td>
+              <td class="text-right">{{ order.order_price * order.order_amount | currency: "￥" }}</td>
+              <td class="text-right">{{ order.order_time | date }}</td>
+            </tr>
+          </table>
+        </div>
+      </rd-widget-body>
+    </rd-widget>
+  </div>
+</div>

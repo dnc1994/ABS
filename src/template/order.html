@@ -1,0 +1,45 @@
+<div class="row abs-booksearch" ng-controller="OrderDetailCtrl">
+  <div class="col-lg-12">
+    <rd-widget>
+      <rd-widget-header icon="fa-credit-card" title="{{ 'Orders' | translate }}"></rd-widget-header>
+      <rd-widget-body classes="medium">
+        <a href="javascript:" ng-click="goBack()"><i class="fa fa-arrow-left"></i> {{ 'Back to List' | translate }}</a>
+
+        <div class="row">
+          <div class="page-header">
+            <div class="alert alert-{{ ['danger', 'warning', 'success'][order.payment_status] }}" role="alert"><i class="fa fa-{{ ['times-circle', 'warning', 'check-circle'][order.payment_status] }}"></i> &nbsp;{{ ['Please finish your payment as soon as possible.', 'Notice! Books in this order are not added to stock yet.', 'Congratulations! Order has been completed.'][order.payment_status] | translate }}</div>
+
+            <h3>{{ 'Order' | translate }}{{ ':' | translate }}{{ '《' | translate }}{{ book.title }}{{ '》' | translate }}</h3>
+
+          </div>
+          <table class="table table-hover">
+            <thead>
+              <tr><td class="col-sm-1 col-xs-4">{{ 'Order ID' | translate }}</td><td class="col-sm-11 col-xs-8">{{ order.order_id }}</td></tr>
+              <tr><td class="col-sm-1 col-xs-4">{{ 'Date' | translate }}</td><td class="col-sm-11 col-xs-8">{{ order.order_time | date: 'medium' }}</td></tr>
+              <tr><td class="col-sm-1 col-xs-4">{{ 'Payment' | translate }}</td><td class="col-sm-11 col-xs-8"><span class="label label-{{ order.payment_status ? 'success' : 'danger' }}">{{ order.payment_status ? 'Payment Already Processed' : 'Waiting for Payment' | translate }}</span> <span ng-if="order.payment_status" class="label label-{{ order.payment_status == 2 ? 'success' : 'warning' }}">{{ order.payment_status == 2 ? 'On Shelf' : 'Off Shelf' | translate }}</span></td></tr>
+            </thead>
+            <tbody>
+              <tr><td class="col-sm-1 col-xs-4">{{ 'ISBN' | translate }}</td><td class="col-sm-11 col-xs-8"><a href="#/books/{{ order.isbn }}">{{ book.isbn }}</a></td></tr>
+              <tr><td class="col-sm-1 col-xs-4">{{ 'Authors' | translate }}</td><td class="col-sm-11 col-xs-8">{{ book.author }}</td></tr>
+              <tr><td class="col-sm-1 col-xs-4">{{ 'Publisher' | translate }}</td><td class="col-sm-11 col-xs-8">{{ book.publisher }}</td></tr>
+              <tr><td class="col-sm-1 col-xs-4"><strong>{{ 'Current Stock' | translate }}</strong></td><td class="col-sm-11 col-xs-8">{{ book.stock | number }}</td></tr>
+              <tr><td class="col-sm-1 col-xs-4"><strong>{{ 'Selling Price' | translate }}</strong></td><td class="col-sm-11 col-xs-8">{{ book.retail_price | currency: "￥" }}</td></tr>
+              <tr><td class="col-sm-1 col-xs-4"><strong>{{ 'Order Price' | translate }}</strong></td><td class="col-sm-11 col-xs-8">{{ order.order_price | currency: "￥" }}</td></tr>
+              <tr><td class="col-sm-1 col-xs-4"><strong>{{ 'Order Amount' | translate }}</strong></td><td class="col-sm-11 col-xs-8">{{ order.order_amount | number }}</td></tr>
+            </tbody>
+          </table>
+
+          <h4>{{ order.order_price | currency: "￥" }} &times; {{ order.order_amount | number }} = {{ order.order_price * order.order_amount | currency: "￥" }}</h4>
+
+          <hr>
+
+          <div class="btn-group" role="group">
+            <a ng-if="order.payment_status == 0" type="button" class="btn btn-success" ng-click="pay()"><i class="fa fa-credit-card"></i> {{ 'Finish Payment' | translate }}</a>
+            <a ng-if="order.payment_status == 1" type="button" class="btn btn-success" ng-click="onShelf()"><i class="fa fa-upload"></i> {{ 'Put On Shelf' | translate }}</a>
+            <a ng-if="order.payment_status == 0" type="button" class="btn btn-danger" ng-click="cancel()"><i class="fa fa-ban"></i> {{ 'Cancel Order' | translate }}</a>
+          </div>
+        </div>
+      </rd-widget-body>
+    </rd-widget>
+  </div>
+</div>

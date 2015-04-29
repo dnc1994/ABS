@@ -3,6 +3,8 @@ Another Bookstore System
 
 Project for Database Course @ Fudan University
 
+Frontend: [http://shud.in/ABS-frontend/dist/](http://shud.in/ABS-frontend/dist/)
+
 ## Author
 [Shu Ding](https://github.com/quietshu)
 
@@ -12,6 +14,12 @@ Project for Database Course @ Fudan University
 - web.py
 - gevent
 - psycopg2
+- angular.js
+- bootstrap
+- rdash
+- chart.js
+- gulp
+- npm & bower
 
 ## License
 MIT License

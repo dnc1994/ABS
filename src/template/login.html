@@ -1,0 +1,17 @@
+<div id="login">
+  <div class="col-lg-6 col-lg-offset-3 col-md-8 col-md-offset-2">
+    <div class="jumbotron text-center">
+      <h1>{{ 'Login' | translate }}</h1>
+      <hr/>
+      <div class="row">
+        <form class="form-horizontal col-sm-6 col-sm-offset-3">
+          <input type="text" class="form-control" id="inputUsername" placeholder="Username" ng-model="login.username">
+          <br/>
+          <input type="password" class="form-control" id="inputPassword" placeholder="Password" ng-model="login.password">
+        </form>
+      </div>
+      <br/>
+      <p><a class="btn btn-primary btn-lg" href="#" role="button" ng-click="signin()">{{ 'Sign in' | translate }}</a></p>
+    </div>
+  </div>
+</div>
