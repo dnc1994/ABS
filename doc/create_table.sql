@@ -16,6 +16,7 @@ create table users
 -- gender {0=female, 1=male}
 
 insert into users(user_name, user_pw_md5, user_type, work_id, realname, gender, age) values('root', '8a22a370b0783d91fbcbd899f95431bb', 0, 777, 'Farter', 1, 20);
+-- root's password: madamadadane
 
 drop table if exists incomes;
 
