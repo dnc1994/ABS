@@ -1,13 +1,19 @@
+# -*- encoding: utf-8 -*-
 from gevent import monkey; monkey.patch_all()
 from gevent.pywsgi import WSGIServer
 import gevent
 import web
 import psycopg2
+
+import os
 import json
 import md5
 from decimal import Decimal
 
 ##### SETTINGS #####
+
+PORT = 4000
+DEMO_MODE = 1
 
 web.config.debug = False
 web.config.session_parameters['cookie_name'] = 'SESSION'
@@ -16,6 +22,7 @@ web.config.session_parameters['timeout'] = 1800
 
 ##### URLS #####
 
+# URL路由
 urls = (
 	'/',					'test_view',
 	'/user/login',			'user_login',
@@ -41,14 +48,14 @@ urls = (
 
 ##### DATABASES #####
 
+# 连接PostgreSQL数据库
 db = web.database(dbn='postgres', user='postgres', pw='whereshallwego', db='bookstore')
 
 ##### GLOBALS #####
 
-PORT = 4000
-
 app = web.application(urls, globals())
-	
+
+# 设置并初始化session
 session = web.session.Session(app, web.session.DiskStore('sessions'),
 	initializer={
 		'logged_in': 0,
@@ -72,6 +79,10 @@ def defaultencode(o):
 	
 def logged_in(f):
 	def decorated(*args, **kwargs):
+		print dict(session)
+		if DEMO_MODE:
+			web.header('Access-Control-Allow-Origin', '*')
+			web.header('Access-Control-Allow-Credentials', 'true')
 		if session.logged_in != 1:
 			web.header('WWW-Authenticate', 'Basic realm="Please log in first."')
 			web.ctx.status = '401 Unauthorized'
@@ -96,6 +107,9 @@ class test_view:
 
 class user_login:		
 	def POST(self):
+		if DEMO_MODE:
+			web.header('Access-Control-Allow-Origin', '*')
+			web.header('Access-Control-Allow-Credentials', 'true')
 		data = json.loads(web.data())
 		uname = data['username']
 		passwd = data['password']
