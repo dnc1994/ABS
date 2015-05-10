@@ -9,9 +9,12 @@ function MasterCtrl($scope, $cookieStore, $location, $rootScope, $translate) {
     $rootScope.me = {};
     $rootScope.login = {};
     api.user.i(function (data) {
-        if (data.length)
+        if (data.length) {
             $rootScope.me = data[0];
-        else
+            if ($rootScope.me.user_type) {
+                $scope.sidebarLists.push(['#/users', 'Admin', 'users']);
+            }
+        } else
             $location.path('#/login');
     });
 
@@ -47,8 +50,7 @@ function MasterCtrl($scope, $cookieStore, $location, $rootScope, $translate) {
         // ['#/', 'Status', 'tachometer'],
         ['#/books', 'Books', 'book'],
         ['#/orders', 'Orders', 'credit-card'],
-        ['#/bills', 'Bills', 'table'],
-        ['#/users', 'Admin', 'users']
+        ['#/bills', 'Bills', 'table']
     ];
 
     $scope.getClass = function (path) {

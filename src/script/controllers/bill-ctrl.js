@@ -144,13 +144,13 @@ function BillCtrl($scope, $location, $translate) {
             toLabel: $translate.instant('To'),
             customRangeLabel: $translate.instant('Custom'),
             daysOfWeek: [
-                $translate.instant('Su'),
-                $translate.instant('Mo'),
-                $translate.instant('Tu'),
-                $translate.instant('We'),
-                $translate.instant('Th'),
-                $translate.instant('Fr'),
-                $translate.instant('Sa')
+                $translate.instant('Sun'),
+                $translate.instant('Mon'),
+                $translate.instant('Tue'),
+                $translate.instant('Wed'),
+                $translate.instant('Thu'),
+                $translate.instant('Fri'),
+                $translate.instant('Sat')
             ],
             monthNames: [
                 $translate.instant('January'),

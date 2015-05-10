@@ -7,7 +7,7 @@
 
         <div class="row">
           <div class="page-header">
-            <div class="alert alert-{{ ['danger', 'warning', 'success'][order.order_status] }}" role="alert"><i class="fa fa-{{ ['times-circle', 'warning', 'check-circle'][order.order_status] }}"></i> &nbsp;{{ ['Please finish your payment as soon as possible.', 'Notice! Books in this order are not added to stock yet.', 'Congratulations! Order has been completed.'][order.order_status] | translate }}</div>
+            <div class="alert alert-{{ ['danger', 'warning', 'success'][order.order_status] }}" role="alert"><i class="fa fa-{{ ['times-circle', 'warning', 'check-circle'][order.order_status] }}"></i> &nbsp;{{ ['Please process your payment as soon as possible.', 'Attention! Books have not been added to stock yet.', 'Congratulations! The order has been completed.'][order.order_status] | translate }}</div>
 
             <h3>{{ 'Order' | translate }}{{ ':' | translate }}{{ '《' | translate }}{{ book.title }}{{ '》' | translate }}</h3>
 
@@ -16,7 +16,7 @@
             <thead>
               <tr><td class="col-sm-1 col-xs-4">{{ 'Order ID' | translate }}</td><td class="col-sm-11 col-xs-8">{{ order.order_id }}</td></tr>
               <tr><td class="col-sm-1 col-xs-4">{{ 'Date' | translate }}</td><td class="col-sm-11 col-xs-8">{{ order.order_time | date: 'medium' }}</td></tr>
-              <tr><td class="col-sm-1 col-xs-4">{{ 'Payment' | translate }}</td><td class="col-sm-11 col-xs-8"><span class="label label-{{ order.order_status ? 'success' : 'danger' }}">{{ order.order_status ? 'Payment Already Processed' : 'Waiting for Payment' | translate }}</span> <span ng-if="order.order_status" class="label label-{{ order.order_status == 2 ? 'success' : 'warning' }}">{{ order.order_status == 2 ? 'On Shelf' : 'Off Shelf' | translate }}</span></td></tr>
+              <tr><td class="col-sm-1 col-xs-4">{{ 'Payment' | translate }}</td><td class="col-sm-11 col-xs-8"><span class="label label-{{ order.order_status ? 'success' : 'danger' }}">{{ order.order_status ? 'Payment processed & Off shelf' : 'Waiting for Payment' | translate }}</span> <span ng-if="order.order_status" class="label label-{{ order.order_status == 2 ? 'success' : 'warning' }}">{{ order.order_status == 2 ? 'On Shelf' : 'Off Shelf' | translate }}</span></td></tr>
             </thead>
             <tbody>
               <tr><td class="col-sm-1 col-xs-4">{{ 'ISBN' | translate }}</td><td class="col-sm-11 col-xs-8"><a href="#/books/{{ order.isbn }}">{{ book.isbn }}</a></td></tr>
