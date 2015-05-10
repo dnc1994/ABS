@@ -38,9 +38,6 @@ Icon
 .Spotlight-V100
 .Trashes
 
-# Dist Directory
-/dist
-
 # Node modules
 /node_modules
 
