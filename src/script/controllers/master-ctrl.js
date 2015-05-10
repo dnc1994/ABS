@@ -8,13 +8,25 @@ angular.module('ABS')
 function MasterCtrl($scope, $cookieStore, $location, $rootScope, $translate) {
     $rootScope.me = {};
     $rootScope.login = {};
+
+    var setUser = function (user) {
+        $rootScope.me = user;
+        // Sidebar data
+        $scope.sidebarLists = [
+            // ['#/', 'Status', 'tachometer'],
+            ['#/books', 'Books', 'book'],
+            ['#/orders', 'Orders', 'credit-card'],
+            ['#/bills', 'Bills', 'table']
+        ];
+        if (!$rootScope.me.user_type) {
+            $scope.sidebarLists.push(['#/users', 'Admin', 'users']);
+        }
+    };
+
     api.user.i(function (data) {
-        if (data.length) {
-            $rootScope.me = data[0];
-            if (!$rootScope.me.user_type) {
-                $scope.sidebarLists.push(['#/users', 'Admin', 'users']);
-            }
-        } else
+        if (data.length) 
+            setUser(data[0]);
+        else
             $location.path('#/login');
     });
 
@@ -23,8 +35,8 @@ function MasterCtrl($scope, $cookieStore, $location, $rootScope, $translate) {
             if (status == 'OK') {
                 api.user.i(function (data) {
                     if (data.length) {
-                        $rootScope.me = data[0];
                         $cookieStore.put('client', true);
+                        setUser(data[0]);
                     } else
                         $location.path('#/login');
                     $scope.$apply();
@@ -44,14 +56,6 @@ function MasterCtrl($scope, $cookieStore, $location, $rootScope, $translate) {
     $rootScope.changeLang = function (lang) {
         $translate.use(lang);
     };
-
-    // Sidebar data
-    $scope.sidebarLists = [
-        // ['#/', 'Status', 'tachometer'],
-        ['#/books', 'Books', 'book'],
-        ['#/orders', 'Orders', 'credit-card'],
-        ['#/bills', 'Bills', 'table']
-    ];
 
     $scope.getClass = function (path) {
         if ($location.path().substr(0, path.length - 1) == path.slice(1))

@@ -6,6 +6,9 @@
         <a href="javascript:" ng-click="goBack()"><i class="fa fa-arrow-left"></i> {{ 'Back to List' | translate }}</a>
         <div class="row">
           <div class="page-header">
+            <div ng-if="doubanData.succ" style="float:right;height:0">
+              <img src="{{ doubanData.image }}">
+            </div>
             <h3>{{ '《' | translate }}{{ book.title }}{{ '》' | translate }}</h3>
           </div>
           <table class="table table-hover">
@@ -14,6 +17,9 @@
             </thead>
             <tbody>
               <tr><td class="col-sm-1 col-xs-4">{{ 'Authors' | translate }}</td><td class="col-sm-11 col-xs-8">{{ book.author }}</td></tr>
+              <tr ng-if="doubanData.succ"><td class="col-sm-1 col-xs-4">{{ 'Keywords' | translate }}</td><td class="col-sm-5 col-xs-4">{{ doubanData.keywords }}</td></tr>
+              <tr ng-if="doubanData.succ"><td class="col-sm-1 col-xs-4">{{ 'Summary' | translate }}</td><td class="col-sm-5 col-xs-4" style="padding-right: 150px">{{ doubanData.summary }}</td></tr>
+              <tr ng-if="doubanData.succ"><td class="col-sm-1 col-xs-4">{{ 'Pages' | translate }}</td><td class="col-sm-5 col-xs-4">{{ doubanData.pages }}</td></tr>
               <tr><td class="col-sm-1 col-xs-4">{{ 'Publisher' | translate }}</td><td class="col-sm-11 col-xs-8">{{ book.publisher }}</td></tr>
               <tr class="text-info"><td class="col-sm-1 col-xs-4"><strong>{{ 'Selling Price' | translate }}</strong></td><td class="col-sm-11 col-xs-8">{{ book.retail_price | currency: "￥" }}</td></tr>
               <tr class="text-info"><td class="col-sm-1 col-xs-4"><strong>{{ 'Stock' | translate }}</strong></td><td class="col-sm-11 col-xs-8"><mark>{{ book.stock | number }}</mark></td></tr>
