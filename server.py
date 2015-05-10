@@ -92,8 +92,7 @@ def logged_in(f):
 			web.header('Access-Control-Allow-Origin', '*')
 			web.header('Access-Control-Allow-Credentials', 'true')
 		if session.logged_in != 1:
-			web.header('WWW-Authenticate', 'Basic realm="Please log in first."')
-			web.ctx.status = '401 Unauthorized'
+			web.ctx.status = '404 not found'
 			return
 		return f(*args, **kwargs)
 	return decorated
@@ -102,8 +101,7 @@ def logged_in(f):
 def root_only(f):
 	def decorated(*args, **kwargs):
 		if session.user_type != 0:
-			web.header('WWW-Authenticate', 'Basic realm="Root only."')
-			web.ctx.status = '401 Unauthorized'
+			web.ctx.status = '404 not found'
 			return
 		return f(*args, **kwargs)
 	return decorated
@@ -281,14 +279,21 @@ class book_sell:
 			if (new_stock < 0):
 				return 'Fail'
 			qvars['stock'] = new_stock
-			num_updated = db.query('UPDATE books SET stock = $stock WHERE isbn = $isbn', vars=qvars)
-			if num_updated == 0:
+			t = db.transaction()
+			try:
+				num_updated = db.query('UPDATE books SET stock = $stock WHERE isbn = $isbn', vars=qvars)
+				if num_updated == 0:
+					return 'Fail'
+				qvars2 = dict(isbn=isbn, amount=amount, in_total=amount*retail_price)
+				qrets2 = db.query('INSERT INTO incomes(in_time, isbn, amount, in_total) VALUES(now(), $isbn, $amount, $in_total)', vars=qvars2)
+				if not qrets2:
+					return 'Fail'
+			except:
+				t.rollback()
 				return 'Fail'
-			qvars2 = dict(isbn=isbn, amount=amount, in_total=amount*retail_price)
-			qrets2 = db.query('INSERT INTO incomes(in_time, isbn, amount, in_total) VALUES(now(), $isbn, $amount, $in_total)', vars=qvars2)
-			if not qrets2:
-				return 'Fail'
-			return 'OK'
+			else:
+				t.commit()
+				return 'OK'
 
 # 获取订单信息
 class order_data:
@@ -356,16 +361,23 @@ class order_pay:
 				return 'Fail'
 			order_price = qrets[0].order_price
 			order_amount = qrets[0].order_amount
-			num_updated = db.query('UPDATE orders SET order_status = 1 WHERE order_id = $oid', vars=qvars)
-			if num_updated == 0:
+			# 使用事务保证两个操作的原子性
+			t = db.transaction()
+			try:
+				num_updated = db.query('UPDATE orders SET order_status = 1 WHERE order_id = $oid', vars=qvars)
+				if num_updated == 0:
+					return 'Fail'
+				qvars2 = dict(oid=oid, out_total=order_price*order_amount)
+				qrets2 = db.query('INSERT INTO outgoings(out_time, order_id, out_total) VALUES(now(), $oid, $out_total)', vars=qvars2)
+				if not qrets2:
+					return 'Fail'
+			except:
+				t.rollback()
 				return 'Fail'
-			qvars2 = dict(oid=oid, out_total=order_price*order_amount)
-			qrets2 = db.query('INSERT INTO outgoings(out_time, order_id, out_total) VALUES(now(), $oid, $out_total)', vars=qvars2)
-			if qrets2:
-				return 'OK'
 			else:
-				return 'Fail'
-
+				t.commit()
+				return 'OK'
+			
 # 图书上架				
 class order_puton:
 	@logged_in
@@ -382,20 +394,27 @@ class order_puton:
 				return 'Fail'
 			isbn = qrets[0].isbn
 			order_amount = qrets[0].order_amount
-			num_updated = db.query('UPDATE orders SET order_status = 2 WHERE order_id = $oid', vars=qvars)
-			if num_updated == 0:
+			# 使用事务保证两个操作的原子性
+			t = db.transaction()
+			try:
+				num_updated = db.query('UPDATE orders SET order_status = 2 WHERE order_id = $oid', vars=qvars)
+				if num_updated == 0:
+					return 'Fail'
+				qvars2 = dict(isbn=isbn)
+				qrets2 = list(db.select('books', where='isbn = $isbn', vars=qvars2))
+				if not qrets2:
+					return 'Fail'
+				new_stock = qrets2[0].stock + order_amount
+				qvars3 = dict(isbn=isbn, stock=new_stock)
+				qrets3 = db.query('UPDATE books SET stock = $stock WHERE isbn = $isbn', vars=qvars3)
+				if not qrets3:
+					return 'Fail'				
+			except:
+				t.rollback()
 				return 'Fail'
-			qvars2 = dict(isbn=isbn)
-			qrets2 = list(db.select('books', where='isbn = $isbn', vars=qvars2))
-			if not qrets2:
-				return 'Fail'
-			new_stock = qrets2[0].stock + order_amount
-			qvars3 = dict(isbn=isbn, stock=new_stock)
-			qrets3 = db.query('UPDATE books SET stock = $stock WHERE isbn = $isbn', vars=qvars3)
-			if qrets3:
-				return 'OK'
 			else:
-				return 'Fail'				
+				t.commit()
+				return 'OK'
 
 #　查询账单	
 class bill_summary:
@@ -415,7 +434,7 @@ class bill_summary:
 		for r in qrets2:
 			r['out_time'] = r['out_time'].strftime('%Y-%m-%d %H:%M:%S')
 			r['type'] = 'outgoings'
-		resp = ', '.join([json.dumps(r, default=defaultencode)for r in qrets]) + ', ' + ', '.join([json.dumps(r, default=defaultencode)for r in qrets2])
+		resp = ', '.join([', '.join([json.dumps(r, default=defaultencode)for r in qrets]), ', '.join([json.dumps(r, default=defaultencode)for r in qrets2])])
 		return '[' + resp + ']'
 		
 ##### END #####
