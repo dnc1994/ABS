@@ -1,5 +1,5 @@
-insert into books values('9787301168677', '口述史读本', '北京大学出版社', '定宜庄, 汪润', 42..00, 0);
-insert into books values('9784048740135', '天地明察', '角川書店', '冲方丁', 18..90, 0);
+insert into books values('9787301168677', '口述史读本', '北京大学出版社', '定宜庄, 汪润', 42.00, 0);
+insert into books values('9784048740135', '天地明察', '角川書店', '冲方丁', 18.90, 0);
 insert into books values('9784062143233', '新世界より 上', '講談社', '貴志祐介', 19.95, 0);
 insert into books values('9784062764131', '永遠の0', '講談社', '百田 尚樹', 9.20, 0);
 insert into books values('9787111075752', '设计模式', '机械工业出版社', '[美] Erich Gamma, Richard Helm, Ralph Johnson, John Vlissides', 35.00, 0);
