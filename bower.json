@@ -1,14 +1,11 @@
 {
-    "name": "rdash-angular",
+    "name": "ABS",
     "version": "0.0.1",
-    "description": "An AngularJS implementation of the responsive dashboard",
-    "homepage": "https://github.com/Ehesp/Responsive-Dashboard",
+    "description": "Another Bookstore System",
+    "homepage": "https://github.com/dnc1994/ABS",
     "authors": [
-        "Elliot Hesp <elliot.hesp@gmail.com>"
-    ],
-    "contributors": [
-        "Ricardo Pascua Jr <rdpascua@outlook.com>",
-        "Leonel Samayoa <leonel.e.samayoa@gmail.com>"
+        "Linghao Zhang <zlhdnc1994@gmail.com>",
+        "Shu Ding <quietshu@gmail.com>"
     ],
     "main": "index.html",
     "license": "MIT",
@@ -30,6 +27,6 @@
     },
     "repository": {
         "type": "git",
-        "url": "https://github.com/rdash/rdash-angular"
+        "url": "https://github.com/dnc1994/ABS"
     }
 }

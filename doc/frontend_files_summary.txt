@@ -1,0 +1,19 @@
+前端代码说明
+
+编译后代码：
+	dist/			压缩、混淆、连接过的前端文件（编译后的文件）
+
+源文件与配置流程：
+
+源代码：
+	src/script/apis.js		所有前后端对接 RESTful API
+	src/script/module.js	主文件、中英文本地化服务
+	src/script/routes.js 	前端的路由控制
+	src/controllers/		AngularJS 的所有 controller 文件，包含所有界面的视图控制器
+	src/directives/			AngularJS 的所有指令、组件和服务
+	src/template/			各个页面的模板
+
+配置与依赖：
+	bower.json				bower install
+	package.json			npm install
+	gulpfile.js 			gulp build
