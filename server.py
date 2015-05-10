@@ -1,4 +1,6 @@
 # -*- encoding: utf-8 -*-
+
+# 用gevent实现异步
 from gevent import monkey; monkey.patch_all()
 from gevent.pywsgi import WSGIServer
 import gevent
@@ -12,9 +14,12 @@ from decimal import Decimal
 
 ##### SETTINGS #####
 
+# 指定后端服务器端口
 PORT = 4000
-DEMO_MODE = 1
+# 演示模式，关闭同源限制、输出调试信息等
+DEMO_MODE = True
 
+# 设置session属性
 web.config.debug = False
 web.config.session_parameters['cookie_name'] = 'SESSION'
 web.config.session_parameters['ignore_expiry'] = True 
@@ -66,6 +71,7 @@ session = web.session.Session(app, web.session.DiskStore('sessions'),
 
 ##### FUNCTIONS #####
 
+# 用于将Decimal对象序列化为JSON对象
 class fakefloat(float):
 	def __init__(self, value):
 		self._value = value
@@ -76,11 +82,13 @@ def defaultencode(o):
 	if isinstance(o, Decimal):
 		return fakefloat(o)
 	raise TypeError(repr(o) + " is not JSON serializable")
-	
+
+# 检查用户是否已登入
 def logged_in(f):
 	def decorated(*args, **kwargs):
-		print dict(session)
 		if DEMO_MODE:
+			print dict(session)
+			# 用于在本机演示时关闭同源限制
 			web.header('Access-Control-Allow-Origin', '*')
 			web.header('Access-Control-Allow-Credentials', 'true')
 		if session.logged_in != 1:
@@ -89,7 +97,8 @@ def logged_in(f):
 			return
 		return f(*args, **kwargs)
 	return decorated
-	
+
+# 检查用户是否为超级管理员	
 def root_only(f):
 	def decorated(*args, **kwargs):
 		if session.user_type != 0:
@@ -105,6 +114,7 @@ class test_view:
 	def GET(self):
 		return 'TEST'
 
+# 用户登录	
 class user_login:		
 	def POST(self):
 		if DEMO_MODE:
@@ -113,6 +123,7 @@ class user_login:
 		data = json.loads(web.data())
 		uname = data['username']
 		passwd = data['password']
+		# 储存密码的MD5值
 		passwd_md5 = md5.md5(passwd).hexdigest()
 		qvars = dict(uname=uname)
 		qrets = list(db.select('users', where='user_name = $uname', vars=qvars))
@@ -121,19 +132,22 @@ class user_login:
 				session.logged_in = 1
 				session.user_id = qrets[0].user_id
 				session.user_type = qrets[0].user_type
-				print 'LOGIN OK'
+				if DEMO_MODE:
+					print 'LOGIN OK'
 				return 'OK'
 			else:
 				return 'Fail'
 		else:
 			return 'Fail'
 
+# 用户注销
 class user_logout:
 	@logged_in
 	def GET(self):
 		session.logged_in = 0
 		return 'OK'
-			
+
+# 获取用户个人信息		
 class user_i:
 	@logged_in
 	def GET(self):
@@ -144,17 +158,20 @@ class user_i:
 			return '[' + json.dumps(qrets[0]) + ']'
 		else:
 			return '[]'
-			
+
+# [超级管理员可用] 获取所有用户信息
 class user_all:
 	@root_only
 	@logged_in
 	def GET(self):
 		qrets = list(db.select('users'))
+		# 从响应中移除密码的MD5值
 		for r in qrets:
 			del r['user_pw_md5']
 		resp = ', '.join([json.dumps(r) for r in qrets])
 		return '[' + resp + ']'
 
+# [超级管理员可用] 创建用户
 class user_new:
 	@root_only
 	@logged_in
@@ -172,7 +189,8 @@ class user_new:
 			return 'OK'
 		else:
 			return 'Fail'
-		
+
+# [超级管理员可用] 删除用户
 class user_delete:
 	@root_only
 	@logged_in
@@ -187,7 +205,8 @@ class user_delete:
 			return 'Fail'
 		else:
 			return 'OK'	
-	
+
+# 获取图书信息			
 class book_data:
 	@logged_in
 	def GET(self, isbn):
@@ -199,14 +218,16 @@ class book_data:
 			return '[' + json.dumps(qrets[0], default=defaultencode) + ']'
 		else:
 			return '[]'
-			
+
+# 获取所有图书信息			
 class book_all:
 	@logged_in
 	def GET(self):
 		qrets = list(db.select('books'))
 		resp = ', '.join([json.dumps(r, default=defaultencode) for r in qrets])
 		return '[' + resp + ']'
-			
+
+# 创建图书		
 class book_new:
 	@logged_in
 	def POST(self):
@@ -218,6 +239,7 @@ class book_new:
 		else:
 			return 'Fail'
 
+# 更新图书信息
 class book_update:
 	@logged_in
 	def POST(self):
@@ -229,6 +251,7 @@ class book_update:
 		else:
 			return 'OK'
 
+# 删除图书			
 class book_delete:
 	@logged_in
 	def POST(self):
@@ -241,6 +264,7 @@ class book_delete:
 		else:
 			return 'OK'
 
+# 卖出图书			
 class book_sell:
 	@logged_in
 	def POST(self):
@@ -266,6 +290,7 @@ class book_sell:
 				return 'Fail'
 			return 'OK'
 
+# 获取订单信息
 class order_data:
 	@logged_in
 	def GET(self, oid):
@@ -278,7 +303,8 @@ class order_data:
 			return '[' + json.dumps(qrets[0], default=defaultencode) + ']'
 		else:
 			return '[]'
-			
+
+# 获取所有订单信息			
 class order_all:
 	@logged_in
 	def GET(self):
@@ -287,7 +313,8 @@ class order_all:
 			r['order_time'] = str(r['order_time'])
 		resp = ', '.join([json.dumps(r, default=defaultencode)for r in qrets])
 		return '[' + resp + ']'
-	
+
+# 创建订单		
 class order_new:
 	@logged_in
 	def POST(self):
@@ -298,7 +325,8 @@ class order_new:
 			return 'OK'
 		else:
 			return 'Fail'
-			
+
+# 删除订单			
 class order_delete:
 	@logged_in
 	def POST(self):
@@ -311,6 +339,7 @@ class order_delete:
 		else:
 			return 'OK'
 
+# 支付订单
 class order_pay:
 	@logged_in
 	def POST(self):
@@ -336,7 +365,8 @@ class order_pay:
 				return 'OK'
 			else:
 				return 'Fail'
-				
+
+# 图书上架				
 class order_puton:
 	@logged_in
 	def POST(self):
@@ -366,7 +396,8 @@ class order_puton:
 				return 'OK'
 			else:
 				return 'Fail'				
-				
+
+#　查询账单	
 class bill_summary:
 	@logged_in
 	def POST(self):
@@ -388,7 +419,7 @@ class bill_summary:
 		return '[' + resp + ']'
 		
 ##### END #####
-			
+
 if __name__ == '__main__':
 	app = app.wsgifunc()
 	print 'Severing on %s...' % (PORT)
