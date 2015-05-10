@@ -14,6 +14,7 @@ function OrderDetailCtrl($scope) {
                     $scope.book = data[0];
                 else
                     $scope.book = {};
+                $scope.$apply();
             });
         }
         else {
@@ -29,14 +30,16 @@ function OrderDetailCtrl($scope) {
     $scope.pay = function () {
         api.order.pay($scope.order.order_id, function (status) {
             if (status == 'OK')
-                $scope.order.payment_status = 1;
+                $scope.order.order_status = 1;
+            $scope.$apply();
         });
     };
 
     $scope.onShelf = function () {
         api.order.puton($scope.order.order_id, function (status) {
             if (status == 'OK')
-                $scope.order.payment_status = 2;
+                $scope.order.order_status = 2;
+            $scope.$apply();
         });
     };
 
@@ -44,6 +47,7 @@ function OrderDetailCtrl($scope) {
         api.order.delete($scope.order.order_id, function (status) {
             if (status == 'OK')
                 $scope.goBack();
+            $scope.$apply();
         });
     }
 }

@@ -18,7 +18,14 @@ function MasterCtrl($scope, $cookieStore, $location, $rootScope, $translate) {
     $rootScope.signin = function () {
         api.user.login($rootScope.login.username, $rootScope.login.password, function (status) {
             if (status == 'OK') {
-
+                api.user.i(function (data) {
+                    if (data.length) {
+                        $rootScope.me = data[0];
+                        $cookieStore.put('client', true);
+                    } else
+                        $location.path('#/login');
+                    $scope.$apply();
+                });
             }
         });
     };
@@ -26,7 +33,7 @@ function MasterCtrl($scope, $cookieStore, $location, $rootScope, $translate) {
     $rootScope.logout = function () {
         api.user.logout(function (status) {
             if (status == 'OK') {
-
+                $cookieStore.put('client', false);
             }
         });
     };
@@ -50,8 +57,8 @@ function MasterCtrl($scope, $cookieStore, $location, $rootScope, $translate) {
         return '';
     };
 
-    $scope.getCurrentView = function () {
-        return $location.path().split('/')[1].toUpperCase() || 'HOME';
+    $rootScope.getCurrentView = function () {
+        return ($location.path().split('/')[1] || 'home').toUpperCase();
     };
 
     /**

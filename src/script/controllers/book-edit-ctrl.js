@@ -32,11 +32,23 @@ function BookEditCtrl($scope, $location) {
         else {
             // Handle error
         }
+        $scope.$apply();
     });
 
     //$scope.state;
     $scope.goBack = function () {
         window.history.back();
+        $scope.$apply();
+    };
+
+    $scope.remove = function () {
+        if (confirm('Delete the book ' + $scope.book.title))
+            api.book.delete($scope.book.isbn, function (data) {
+                if (data == 'OK') {
+                    // Update succ
+                    window.location.hash = '#/';
+                }
+            })
     };
 
     $scope.update = function () {
@@ -85,10 +97,12 @@ function BookEditCtrl($scope, $location) {
             api.book.update($scope.state.isbn, $scope.book, function (data) {
                 if (data == 'OK') {
                     // Update succ
+                    $scope.goBack();
                 }
                 else {
                     // Handle error
                 }
+                $scope.$apply();
             });
         }
     };
