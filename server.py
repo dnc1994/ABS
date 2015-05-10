@@ -24,8 +24,8 @@ urls = (
 	'/user/all',			'user_all',
 	'/user/new',			'user_new',
 	'/user/delete',			'user_delete',
-	'/book/search/(.+)',	'book_search',
 	'/book/data/(.+)',		'book_data',
+	'/book/all',			'book_all',
 	'/book/new',			'book_new',
 	'/book/update',			'book_update',
 	'/book/delete',			'book_delete',
@@ -44,6 +44,8 @@ urls = (
 db = web.database(dbn='postgres', user='postgres', pw='whereshallwego', db='bookstore')
 
 ##### GLOBALS #####
+
+PORT = 4000
 
 app = web.application(urls, globals())
 	
@@ -92,25 +94,7 @@ class test_view:
 	def GET(self):
 		return 'TEST'
 
-class user_login:
-	def GET(self):
-		uname = 'Zemin'
-		passwd = 'madamadadane'
-		passwd_md5 = md5.md5(passwd).hexdigest()
-		qvars = dict(uname=uname)
-		qrets = list(db.select('users', where='user_name = $uname', vars=qvars))
-		if qrets:
-			if qrets[0].user_pw_md5 == passwd_md5:
-				session.logged_in = 1
-				session.user_id = qrets[0].user_id
-				session.user_type = qrets[0].user_type
-				return session.user_id
-				return 'OK'
-			else:
-				return 'Fail'
-		else:
-			return 'Fail'
-			
+class user_login:		
 	def POST(self):
 		data = json.loads(web.data())
 		uname = data['username']
@@ -123,6 +107,7 @@ class user_login:
 				session.logged_in = 1
 				session.user_id = qrets[0].user_id
 				session.user_type = qrets[0].user_type
+				print 'LOGIN OK'
 				return 'OK'
 			else:
 				return 'Fail'
@@ -150,8 +135,6 @@ class user_all:
 	@root_only
 	@logged_in
 	def GET(self):
-		#if session.user_type != 0:
-		#	return '[]'
 		qrets = list(db.select('users'))
 		for r in qrets:
 			del r['user_pw_md5']
@@ -190,19 +173,6 @@ class user_delete:
 			return 'Fail'
 		else:
 			return 'OK'	
-
-# temporary equivalent to book_data
-class book_search:
-	@logged_in
-	def GET(self, isbn):
-		if (not isbn.isdigit()) or (not len(isbn) == 13):
-			return '[]'
-		qvars = dict(isbn=isbn)
-		qrets = list(db.select('books', where='isbn = $isbn', vars=qvars))
-		if qrets:
-			return '[' + json.dumps(qrets[0], default=defaultencode) + ']'
-		else:
-			return '[]'
 	
 class book_data:
 	@logged_in
@@ -216,12 +186,19 @@ class book_data:
 		else:
 			return '[]'
 			
+class book_all:
+	@logged_in
+	def GET(self):
+		qrets = list(db.select('books'))
+		resp = ', '.join([json.dumps(r, default=defaultencode) for r in qrets])
+		return '[' + resp + ']'
+			
 class book_new:
 	@logged_in
 	def POST(self):
 		data = json.loads(web.data())
 		qvars = data
-		qrets = db.query('INSERT INTO books(isbn, title, publisher, author) VALUES($isbn, $title, $publisher, $author)', vars=qvars)
+		qrets = db.query('INSERT INTO books(isbn, title, publisher, author, retail_price) VALUES($isbn, $title, $publisher, $author, $retail_price)', vars=qvars)
 		if qrets:
 			return 'OK'
 		else:
@@ -232,7 +209,7 @@ class book_update:
 	def POST(self):
 		data = json.loads(web.data())
 		qvars = data
-		num_updated = db.query('UPDATE books SET title = $title, publisher = $publisher, author = $author, retail_price = $retail_price, stock = $stock', vars=qvars)
+		num_updated = db.query('UPDATE books SET title = $title, publisher = $publisher, author = $author, retail_price = $retail_price, stock = $stock WHERE isbn = $isbn', vars=qvars)
 		if num_updated == 0:
 			return 'Fail'
 		else:
@@ -323,6 +300,7 @@ class order_delete:
 class order_pay:
 	@logged_in
 	def POST(self):
+		print web.data()
 		data = json.loads(web.data())
 		oid = data['order_id']
 		qvars = dict(oid=oid)
@@ -387,17 +365,17 @@ class bill_summary:
 		if (not qrets) and (not qrets2):
 			return '[]'
 		for r in qrets:
-			del r['in_time']
+			r['in_time'] = r['in_time'].strftime('%Y-%m-%d %H:%M:%S')
 			r['type'] = 'incomes'
 		for r in qrets2:
-			del r['out_time']
+			r['out_time'] = r['out_time'].strftime('%Y-%m-%d %H:%M:%S')
 			r['type'] = 'outgoings'
-		resp = ', '.join([json.dumps(r, default=defaultencode)for r in qrets]) + ', '.join([json.dumps(r, default=defaultencode)for r in qrets2])
+		resp = ', '.join([json.dumps(r, default=defaultencode)for r in qrets]) + ', ' + ', '.join([json.dumps(r, default=defaultencode)for r in qrets2])
 		return '[' + resp + ']'
 		
 ##### END #####
 			
 if __name__ == '__main__':
 	app = app.wsgifunc()
-	print 'Severing on 4000...'
-	WSGIServer(('', 4000), app).serve_forever()
+	print 'Severing on %s...' % (PORT)
+	WSGIServer(('', PORT), app).serve_forever()

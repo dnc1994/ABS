@@ -32,7 +32,7 @@ create table books
 	title				varchar(100),
 	publisher			varchar(100),
 	author				varchar(100),
-	retail_price		numeric(8, 2)		default				-1.00,
+	retail_price		numeric(8, 2),
 	stock				integer				default				0
 );
 
