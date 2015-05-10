@@ -11,7 +11,7 @@ function MasterCtrl($scope, $cookieStore, $location, $rootScope, $translate) {
     api.user.i(function (data) {
         if (data.length) {
             $rootScope.me = data[0];
-            if ($rootScope.me.user_type) {
+            if (!$rootScope.me.user_type) {
                 $scope.sidebarLists.push(['#/users', 'Admin', 'users']);
             }
         } else

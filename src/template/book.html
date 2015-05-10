@@ -17,6 +17,17 @@
               <tr><td class="col-sm-1 col-xs-4">{{ 'Publisher' | translate }}</td><td class="col-sm-11 col-xs-8">{{ book.publisher }}</td></tr>
               <tr class="text-info"><td class="col-sm-1 col-xs-4"><strong>{{ 'Selling Price' | translate }}</strong></td><td class="col-sm-11 col-xs-8">{{ book.retail_price | currency: "￥" }}</td></tr>
               <tr class="text-info"><td class="col-sm-1 col-xs-4"><strong>{{ 'Stock' | translate }}</strong></td><td class="col-sm-11 col-xs-8"><mark>{{ book.stock | number }}</mark></td></tr>
+              <tr>
+                <td class="col-sm-1 col-xs-4" style="line-height: 2.4em;">{{ 'Sell' | translate }}</td>
+                <td class="col-sm-3 pull-left">
+                  <div class="input-group">
+                    <input type="text" class="form-control" ng-model="sellData.amount" placeholder="{{ 'Count' | translate }}">
+                    <span class="input-group-btn">
+                      <a type="button" class="btn btn-default" href="javascript:" ng-click='sell()'>{{ 'OK' | translate }}</a>
+                    </span>
+                  </div>
+                </td>
+              </tr>
             </tbody>
           </table>
           <div class="btn-group" role="group">

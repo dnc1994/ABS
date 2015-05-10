@@ -5,7 +5,7 @@
 
 // Data for demo
 
-var hostname = "http://localhost:8000/";
+var hostname = "http://10.147.106.43:4000/";
 var cookie = document.cookie.indexOf('client=true') >= 0 ? 'ok' : '';
 
 window.api = {
@@ -137,8 +137,8 @@ window.api = {
                 window.location.hash = '#/login';
                 return;
             }
-            $.post(hostname + 'book/new', JSON.stringify({
-                isbn: isbn,
+            $.post(hostname + 'book/sell', JSON.stringify({
+                isbn: '' + isbn,
                 amount: amount
             }), function (data) {
                 callback && callback(data);
