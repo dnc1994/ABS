@@ -39,7 +39,6 @@ function OrderNewCtrl($scope, $location) {
         $scope.book.isbn = +$scope.book.isbn || '';
         if ($scope.book.isbn)
             api.book.data($scope.book.isbn, function (data) {
-                console.log(data);
                 if (data.length) {
                     $scope.lock = true;
                     for (var prop in data[0])
@@ -52,6 +51,7 @@ function OrderNewCtrl($scope, $location) {
                         if ($scope.book.hasOwnProperty(prop) && prop != 'isbn')
                             $scope.book[prop] = '';
                 }
+                $scope.$apply();
             });
         else if ($scope.lock) {
             $scope.lock = false;

@@ -9,6 +9,7 @@ function BookDetailCtrl($scope) {
     api.book.data($scope.state.isbn, function (data) {
         if (data.length) {
             $scope.book = data[0];
+            $scope.$apply();
         }
         else {
 

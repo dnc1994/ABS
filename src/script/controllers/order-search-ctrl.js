@@ -18,6 +18,7 @@ function OrderSearchCtrl($scope, $location, $filter) {
     api.order.all(function (data) {
         $scope.orders.all = data;
         $scope.orders.show = data;
+        $scope.$apply();
     });
 
     $scope.filterChange = function () {
@@ -29,7 +30,7 @@ function OrderSearchCtrl($scope, $location, $filter) {
 
         $scope.orders.show = [];
         $scope.orders.all.forEach(function (order) {
-            if (filters.indexOf(order.payment_status) != -1)
+            if (filters.indexOf(order.order_status) != -1)
                 $scope.orders.show.push(order);
         });
     };

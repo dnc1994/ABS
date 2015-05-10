@@ -32,7 +32,7 @@
             </thead>
 
             <tr ng-repeat="order in orders.show | filter: { isbn: orders.isbn }">
-              <td class="text-center {{ ['danger', 'warning', 'success'][order.payment_status] }}">{{ ['Waiting for Payment', 'Payment Already Processed & Off Shelf', 'On Shelf'][order.payment_status] | translate }}</td>
+              <td class="text-center {{ ['danger', 'warning', 'success'][order.order_status] }}">{{ ['Waiting for Payment', 'Payment Already Processed & Off Shelf', 'On Shelf'][order.order_status] | translate }}</td>
               <td class="text-center"><a href="#/orders/{{ order.order_id }}">{{ order.order_id }}</a></td>
               <td class="text-center"><a href="#/books/{{ order.isbn }}">{{ order.isbn }}</a></td>
               <td class="text-right">{{ order.order_price | currency: "￥" }}</td>

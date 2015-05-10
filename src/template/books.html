@@ -26,7 +26,7 @@
                 <th>{{ 'Stock' | translate }}</th>
                 <th>{{ 'Publisher' | translate }}</th>
               </tr>
-              <tr ng-repeat="book in books.result">
+              <tr ng-repeat="book in books.result | orderBy: '-rank'">
                 <td><a href="#/books/{{ book.isbn }}">{{ book.isbn }}</a></td>
                 <td><a href="#/books/{{ book.isbn }}">{{ '《' | translate }}{{ book.title }}{{ '》' | translate }}</a></td>
                 <td>{{ book.author }}</td>

@@ -11,6 +11,7 @@ angular.module('ABS', ['ui.bootstrap', 'ui.router', 'ngCookies', 'pascalprecht.t
         'Cancel':                                                  '取消',
         'Back':                                                    '返回',
         'Update':                                                  '更新',
+        'Delete':                                                  '删除',
         'Status':                                                  '状态',
         'Logout':                                                  '登出',
         'Display':                                                 '显示',

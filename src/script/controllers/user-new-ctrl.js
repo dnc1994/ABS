@@ -80,7 +80,7 @@ function UserNewCtrl($scope, $location) {
 
         if (!hasError) {
             api.user.new($scope.user, function (data) {
-
+                $scope.goBack();
             });
         }
     };

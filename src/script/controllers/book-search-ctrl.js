@@ -8,24 +8,39 @@ angular.module('ABS')
 function BookSearchCtrl($scope, $location) {
     $scope.books = {
         keywords: '',
-        result: []
+        result: [],
+        raw: []
     };
 
     api.book.all(function (data) {
+        $scope.books.raw = data;
         $scope.books.result = data;
+        $scope.$apply();
     });
 
     $scope.keywordsChange = function () {
         if ($scope.books.keywords.length) {
             $location.search('q', $scope.books.keywords);
-            api.book.search($scope.books.keywords, function (data) {
-                $scope.books.result = data;
+            var keywordsList = $scope.books.keywords.toUpperCase().trim().split(' ');
+            $scope.books.result = [];
+            $scope.books.raw.forEach(function (book) {
+                var str = JSON.stringify(book).toUpperCase();
+                book.rank = 0;
+                keywordsList.forEach(function (keyword) {
+                    if (str.indexOf(keyword) !== -1)
+                        book.rank++;
+                });
+                if (book.rank > 0)
+                    $scope.books.result.push(book);
             });
+            $scope.$apply();
         }
         else {
             $location.search('q', null);
             api.book.all(function (data) {
+                $scope.books.raw = data;
                 $scope.books.result = data;
+                $scope.$apply();
             });
         }
     };

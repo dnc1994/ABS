@@ -10,5 +10,6 @@ function UserCtrl($scope) {
 
     api.user.all(function (data) {
         $scope.user = data;
+        $scope.$apply();
     });
 }
