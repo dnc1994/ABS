@@ -5,7 +5,7 @@
 
 // Data for demo
 
-var hostname = "http://10.147.106.43:4000/";
+var hostname = "http://localhost:8000/";
 var cookie = document.cookie.indexOf('client=true') >= 0 ? 'ok' : '';
 
 window.api = {
