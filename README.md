@@ -3,7 +3,7 @@ Another Bookstore System
 
 Project for Database Course @ Fudan University
 
-demo: [http://shud.in/ABS-frontend/dist/](http://shud.in/ABS-frontend/dist/)
+demo: [http://quietshu.github.io/ABS-frontend/dist/](http://quietshu.github.io/ABS-frontend/dist/)
 
 ## Author
 [Shu Ding](https://github.com/quietshu)
